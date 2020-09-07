@@ -4,14 +4,14 @@ public:
     desktopFontSize: 14px
     audioChatNotification: false
     autoJoin: true
-    listenOnlyMode: true
+    listenOnlyMode: false
     forceListenOnly: false
     skipCheck: false
-    clientTitle: BigBlueButton
+    clientTitle: Speexx RTC
     appName: BigBlueButton HTML5 Client
     bbbServerVersion: 2.2
     copyright: "©2020 BigBlueButton Inc."
-    html5ClientBuild: HTML5_CLIENT_VERSION
+    html5ClientBuild: 1008
     helpLink: https://bigbluebutton.org/html5/
     lockOnJoin: true
     cdn: ""
@@ -79,16 +79,16 @@ public:
     connectionTimeout: 60000
     showHelpButton: true
     effectiveConnection:
-      - critical
-      - danger
-      - warning
+    - critical
+    - danger
+    - warning
   externalVideoPlayer:
     enabled: true
   networkMonitoring:
     enableNetworkMonitoring: false
     packetLostThreshold: 10
   kurento:
-    wsUrl: HOST
+    wsUrl: wss://rtc2.speexx.com/bbb-webrtc-sfu
     chromeDefaultExtensionKey: akgoaoikmbmhcopjgakkcepdgdgkjfbc
     chromeDefaultExtensionLink: https://chrome.google.com/webstore/detail/bigbluebutton-screenshare/akgoaoikmbmhcopjgakkcepdgdgkjfbc
     chromeExtensionKey: KEY
@@ -105,41 +105,22 @@ public:
             max: 1600
         audio: false
       chromeScreenshareSources:
-        - window
-        - screen
+      - window
+      - screen
       firefoxScreenshareSource: window
     cameraProfiles:
-      # id: unique identifier of the profile
-      # name: name of the profile visible to users
-      # default: if this is the default profile which is pre-selected
-      # bitrate: the average bitrate for used for a webcam stream
-      # constraints:
-      #   # Optional constraints put on the requested video a browser MAY honor
-      #   # For a detailed list on possible values see:
-      #   # https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints
-      #   # Examples:
-      #   width: requested width of the camera stream
-      #   frameRate: requested framerate
-      - id: low
-        name: Low quality
-        default: false
-        bitrate: 100
-      - id: medium
-        name: Medium quality
-        default: true
-        bitrate: 200
-      - id: high
-        name: High quality
-        default: false
-        bitrate: 500
-      - id: hd
-        name: High definition
-        default: false
-        bitrate: 800
+    - id: low # id: unique identifier of the profile
+      name: Low quality
+      default: false
+      bitrate: 100
+    - id: high
+      name: High quality
+      default: false
+      bitrate: 400
     enableScreensharing: true
     enableVideo: true
     enableVideoMenu: true
-    enableListenOnly: true
+    enableListenOnly: false
     autoShareWebcam: false
     skipVideoPreview: false
   pingPong:
@@ -163,7 +144,7 @@ public:
     time: 5000
   chat:
     enabled: true
-    startClosed: false
+    startClosed: true 
     min_message_length: 1
     max_message_length: 5000
     grouping_messages_window: 10000
@@ -183,7 +164,7 @@ public:
       enabled: true
   note:
     enabled: false
-    url: ETHERPAD_HOST
+    url: https://rtc2.speexx.com/pad
     config:
       showLineNumbers: false
       showChat: false
@@ -197,7 +178,7 @@ public:
   media:
     stunTurnServersFetchAddress: "/bigbluebutton/api/stuns"
     cacheStunTurnServers: true
-    fallbackStunServer:  ''
+    fallbackStunServer: ''
     mediaTag: "#remote-media"
     callTransferTimeout: 5000
     callHangupTimeout: 2000
@@ -210,17 +191,17 @@ public:
     length: 5
     log: false
     jitter:
-      - 10
-      - 20
-      - 30
+    - 10
+    - 20
+    - 30
     loss:
-      - 0.05
-      - 0.1
-      - 0.2
+    - 0.05
+    - 0.1
+    - 0.2
     level:
-      - warning
-      - danger
-      - critical
+    - warning
+    - danger
+    - critical
     help: STATS_HELP_URL
   presentation:
     allowDownloadable: true
@@ -351,9 +332,10 @@ public:
       - pencil
       - hand
   clientLog:
-    server: { enabled: true, level: info }
-    console: { enabled: true, level: debug }
-    external: { enabled: false, level: info, url: https://LOG_HOST/html5Log, method: POST, throttleInterval: 400, flushOnClose: true, logTag: "" }
+    server: {enabled: true, level: info}
+    console: {enabled: true, level: debug}
+    external: {enabled: false, level: info, url: 'https://LOG_HOST/html5Log', method: POST,
+      throttleInterval: 400, flushOnClose: true, logTag: ""}
 private:
   app:
     host: 127.0.0.1
@@ -362,7 +344,7 @@ private:
     pencilChunkLength: 100
     loadSlidesFromHttpAlways: false
   etherpad:
-    apikey: ETHERPAD_APIKEY
+    apikey: 8hdXd3cwCV0SBx4piJ4kYfx3Jo1uQvysx7jkq9ySyjkDR9RtK127UtGoLaLZKDzy
     version: 1.2.13
     host: 127.0.0.1
     port: 9001
@@ -396,26 +378,30 @@ private:
     heapdump:
       enabled: false
   minBrowserVersions:
-    - browser: chrome
-      version: 72
-    - browser: chromeMobileIOS
-      version: Infinity
-    - browser: firefox
-      version: 63
-    - browser: firefoxMobile
-      version: 68
-    - browser: edge
-      version: 79
-    - browser: ie
-      version: Infinity
-    - browser: safari
-      version: [12, 1]
-    - browser: mobileSafari
-      version: [12, 1]
-    - browser: opera
-      version: 50
-    - browser: electron
-      version: [0, 36]
-    - browser: YandexBrowser
-      version: 19
-
+  - browser: chrome
+    version: 72
+  - browser: chromeMobileIOS
+    version: Infinity
+  - browser: firefox
+    version: 63
+  - browser: firefoxMobile
+    version: 68
+  - browser: edge
+    version: 79
+  - browser: ie
+    version: Infinity
+  - browser: safari
+    version: [12, 1]
+  - browser: mobileSafari
+    version: [12, 1]
+  - browser: opera
+    version: 50
+  - browser: electron
+    version: [0, 36]
+  - browser: YandexBrowser
+    version: 19
+# BEGIN ANSIBLE MANAGED BLOCK
+chat:
+    enabled: true
+    startClosed: false                           
+# END ANSIBLE MANAGED BLOCK

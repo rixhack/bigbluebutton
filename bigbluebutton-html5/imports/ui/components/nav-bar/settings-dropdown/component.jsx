@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import { withModalMounter } from '/imports/ui/components/modal/service';
 import EndMeetingConfirmationContainer from '/imports/ui/components/end-meeting-confirmation/container';
 import { makeCall } from '/imports/ui/services/api';
-import AboutContainer from '/imports/ui/components/about/container';
 import SettingsMenuContainer from '/imports/ui/components/settings/container';
 import Button from '/imports/ui/components/button/component';
 import Dropdown from '/imports/ui/components/dropdown/component';
@@ -14,7 +13,6 @@ import DropdownContent from '/imports/ui/components/dropdown/content/component';
 import DropdownList from '/imports/ui/components/dropdown/list/component';
 import DropdownListItem from '/imports/ui/components/dropdown/list/item/component';
 import DropdownListSeparator from '/imports/ui/components/dropdown/list/separator/component';
-import ShortcutHelpComponent from '/imports/ui/components/shortcut-help/component';
 import withShortcutHelper from '/imports/ui/components/shortcut-help/service';
 import FullscreenService from '../../fullscreen-button/service';
 
@@ -32,14 +30,6 @@ const intlMessages = defineMessages({
   settingsLabel: {
     id: 'app.navBar.settingsDropdown.settingsLabel',
     description: 'Open settings option label',
-  },
-  aboutLabel: {
-    id: 'app.navBar.settingsDropdown.aboutLabel',
-    description: 'About option label',
-  },
-  aboutDesc: {
-    id: 'app.navBar.settingsDropdown.aboutDesc',
-    description: 'Describes about option',
   },
   leaveSessionLabel: {
     id: 'app.navBar.settingsDropdown.leaveSessionLabel',
@@ -65,22 +55,6 @@ const intlMessages = defineMessages({
     id: 'app.navBar.settingsDropdown.exitFullscreenLabel',
     description: 'Exit fullscreen option label',
   },
-  hotkeysLabel: {
-    id: 'app.navBar.settingsDropdown.hotkeysLabel',
-    description: 'Hotkeys options label',
-  },
-  hotkeysDesc: {
-    id: 'app.navBar.settingsDropdown.hotkeysDesc',
-    description: 'Describes hotkeys option',
-  },
-  helpLabel: {
-    id: 'app.navBar.settingsDropdown.helpLabel',
-    description: 'Help options label',
-  },
-  helpDesc: {
-    id: 'app.navBar.settingsDropdown.helpDesc',
-    description: 'Describes help option',
-  },
   endMeetingLabel: {
     id: 'app.navBar.settingsDropdown.endMeetingLabel',
     description: 'End meeting options label',
@@ -97,7 +71,6 @@ const propTypes = {
   mountModal: PropTypes.func.isRequired,
   noIOSFullscreen: PropTypes.bool,
   amIModerator: PropTypes.bool,
-  shortcuts: PropTypes.string,
   isBreakoutRoom: PropTypes.bool,
   isMeteorConnected: PropTypes.bool.isRequired,
 };
@@ -105,7 +78,6 @@ const propTypes = {
 const defaultProps = {
   noIOSFullscreen: true,
   amIModerator: false,
-  shortcuts: '',
   isBreakoutRoom: false,
 };
 
@@ -193,6 +165,7 @@ class SettingsDropdown extends PureComponent {
     // we don't check askForFeedbackOnLogout here,
     // it is checked in meeting-ended component
     Session.set('codeError', this.LOGOUT_CODE);
+    window.location.replace('https://portal.speexx.com');
     // mountModal(<MeetingEndedComponent code={LOGOUT_CODE} />);
   }
 
@@ -204,8 +177,6 @@ class SettingsDropdown extends PureComponent {
     const allowedToEndMeeting = amIModerator && !isBreakoutRoom;
 
     const {
-      showHelpButton: helpButton,
-      helpLink,
       allowLogout: allowLogoutSetting,
     } = Meteor.settings.public.app;
 
@@ -234,31 +205,6 @@ class SettingsDropdown extends PureComponent {
         description={intl.formatMessage(intlMessages.settingsDesc)}
         onClick={() => mountModal(<SettingsMenuContainer />)}
       />),
-      (<DropdownListItem
-        key="list-item-about"
-        icon="about"
-        label={intl.formatMessage(intlMessages.aboutLabel)}
-        description={intl.formatMessage(intlMessages.aboutDesc)}
-        onClick={() => mountModal(<AboutContainer />)}
-      />),
-      !helpButton ? null
-        : (
-          <DropdownListItem
-            key="list-item-help"
-            icon="help"
-            iconRight="popout_window"
-            label={intl.formatMessage(intlMessages.helpLabel)}
-            description={intl.formatMessage(intlMessages.helpDesc)}
-            onClick={() => window.open(`${helpLink}`)}
-          />
-        ),
-      (<DropdownListItem
-        key="list-item-shortcuts"
-        icon="shortcuts"
-        label={intl.formatMessage(intlMessages.hotkeysLabel)}
-        description={intl.formatMessage(intlMessages.hotkeysDesc)}
-        onClick={() => mountModal(<ShortcutHelpComponent />)}
-      />),
       (isMeteorConnected ? <DropdownListSeparator key={_.uniqueId('list-separator-')} /> : null),
       allowedToEndMeeting && isMeteorConnected
         ? (<DropdownListItem
@@ -277,7 +223,6 @@ class SettingsDropdown extends PureComponent {
   render() {
     const {
       intl,
-      shortcuts: OPEN_OPTIONS_AK,
     } = this.props;
 
     const { isSettingOpen } = this.state;
@@ -289,7 +234,7 @@ class SettingsDropdown extends PureComponent {
         onShow={this.onActionsShow}
         onHide={this.onActionsHide}
       >
-        <DropdownTrigger tabIndex={0} accessKey={OPEN_OPTIONS_AK}>
+        <DropdownTrigger tabIndex={0}>
           <Button
             label={intl.formatMessage(intlMessages.optionsLabel)}
             icon="more"
